@@ -1,55 +1,84 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- 
+Sync Impact Report:
+- Version change: N/A → 1.0.0
+- Modified principles: N/A (new constitution)
+- Added sections: All sections
+- Removed sections: N/A
+- Templates requiring updates: 
+  - .specify/templates/plan-template.md ✅ updated
+  - .specify/templates/spec-template.md ✅ updated  
+  - .specify/templates/tasks-template.md ✅ updated
+  - .specify/templates/commands/*.md ✅ reviewed
+- Follow-up TODOs: None
+-->
+
+# Todo Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code Quality
+Every code contribution must follow established standards: Python (backend) requires PEP 8 compliance with type hints and clean functions; TypeScript (frontend) requires strict typing with no 'any' types; All functions must have single responsibility with meaningful names and proper error handling.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. User Experience
+The application must provide a responsive, mobile-first UI using Tailwind CSS; The dashboard must be intuitive with a clear task list, add button, and auth flow; All user interactions must provide clear feedback including loading states and toast notifications for success/error messages.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-First (NON-NEGOTIABLE)
+TDD is mandatory: Tests written → User approved → Tests fail → Then implement; The Red-Green-Refactor cycle must be strictly enforced; All features must have corresponding tests before being considered complete.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Security-First
+All API endpoints must be JWT-protected; User isolation must be enforced at the database level; Authentication must use Better Auth on frontend with JWT verification on backend using a shared secret; All sensitive data must be properly encrypted.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Persistence & Reliability
+All data must persist in Neon PostgreSQL database; The application must maintain data integrity across restarts; Database operations must be atomic and consistent; Error handling must prevent data loss.
 
-### [PRINCIPLE_6_NAME]
+### VI. Multi-User Isolation
+Each user must only see and modify their own tasks; User data must be properly isolated at the application and database level; Authentication and authorization must be verified for every request; User session management must be secure and reliable.
 
+## Technical Constraints
 
-[PRINCIPLE__DESCRIPTION]
+Frontend: Next.js 16+ (App Router), TypeScript, Tailwind CSS
+Backend: FastAPI, SQLModel ORM, Neon PostgreSQL
+Auth: Better Auth (frontend) + JWT verification (backend, shared secret)
+API: RESTful, /api/tasks/* endpoints, all protected
+Database: tasks table with user_id FK + users (managed by Better Auth)
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Development Workflow
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- Use Spec-Kit Plus workflow: Constitution → Specify → Plan → Tasks → Qwen code generation
+- Qwen as ONLY model for code/spec generation (no Claude)
+- Reference specs with @specs/... syntax
+- Human must review & approve every generated code block
+- Preserve full spec history
+- Commit often with semantic messages
+- No manual coding allowed for hackathon evaluation
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Success Definition (Phase II Basic Exit Criteria)
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+☑ All 5 features work end-to-end in web app (Add, View, Update, Delete, Toggle Complete)
+☑ User signup/signin works (Better Auth)
+☑ JWT auth secures API, user isolation enforced
+☑ Data persists in Neon DB after restart
+☑ App runs via docker-compose (frontend + backend + db)
+☑ README has clear setup, auth flow, API docs
+☑ No crashes on normal/edge cases
+
+## Explicit Non-Goals for Phase II Basic
+
+× Advanced features (priorities, tags, due dates, recurring, search, sort)
+× Real-time updates (WebSockets)
+× Chatbot/AI integration (Phase III)
+× Custom styling beyond Tailwind basics
+× Unit/integration tests (optional nice-to-have)
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution is the supreme guiding document for Phase II of Todo.
+Any deviation must be:
+- Explicitly justified
+- Documented in specs/history
+- Approved by project owner
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+All PRs/reviews must verify compliance with these principles.
+Complexity must be justified with clear benefits.
+
+**Version**: 1.0.0 | **Ratified**: 2026-01-02 | **Last Amended**: 2026-01-02
