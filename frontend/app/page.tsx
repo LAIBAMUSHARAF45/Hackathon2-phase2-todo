@@ -14,7 +14,7 @@ const HomePage = () => {
       if (user) {
         router.push('/dashboard');
       } else {
-        router.push('/signi');
+        router.push('/signin');
       }
     }
   }, [user, loading, router]);
