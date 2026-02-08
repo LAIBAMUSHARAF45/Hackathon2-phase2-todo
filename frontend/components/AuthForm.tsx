@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import InputField from './InputField';
+import AuthButton from './AuthButton';
 
 interface AuthFormProps {
   type: 'signin' | 'signup';
@@ -18,7 +20,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, loading = false }) 
     confirmPassword: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -31,148 +33,116 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, loading = false }) 
   return (
     <motion.form
       onSubmit={handleSubmit}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="space-y-5"
     >
-      {type === 'signup' && (
-        <div className="relative">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 peer"
-            placeholder=" "
-          />
-          <label
-            className="absolute left-4 top-3 text-sm text-gray-400 transition-all duration-300 pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-focus:-top-2 peer-focus:text-xs peer-focus:bg-[#080a0f] peer-focus:px-1 peer-focus:text-cyan-400 peer-focus:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-[#080a0f] peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-cyan-400"
-          >
-            Full Name
-          </label>
-        </div>
-      )}
-
-      <div className="relative">
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 peer"
-          placeholder=" "
-        />
-        <label
-          className="absolute left-4 top-3 text-sm text-gray-400 transition-all duration-300 pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-focus:-top-2 peer-focus:text-xs peer-focus:bg-[#080a0f] peer-focus:px-1 peer-focus:text-cyan-400 peer-focus:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-[#080a0f] peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-cyan-400"
-        >
-          Email
-        </label>
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-black gradient-text tracking-tighter uppercase">
+          {type === 'signin' ? 'Sign In' : 'Sign Up'}
+        </h2>
+        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 mt-2">
+          {type === 'signin' ? 'Welcome back to your account' : 'Create your account to get started'}
+        </p>
       </div>
 
-      <div className="relative">
-        <input
+      {type === 'signup' && (
+        <InputField
+          label="Full Name"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+      )}
+
+      <InputField
+        type="email"
+        label="Email Address"
+        id="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
+
+      <InputField
+        type="password"
+        label="Password"
+        id="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
+
+      {type === 'signup' && (
+        <InputField
           type="password"
-          name="password"
-          value={formData.password}
+          label="Confirm Password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={formData.confirmPassword}
           onChange={handleChange}
           required
-          minLength={8}
-          className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 peer"
-          placeholder=" "
         />
-        <label
-          className="absolute left-4 top-3 text-sm text-gray-400 transition-all duration-300 pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-focus:-top-2 peer-focus:text-xs peer-focus:bg-[#080a0f] peer-focus:px-1 peer-focus:text-cyan-400 peer-focus:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-[#080a0f] peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-cyan-400"
-        >
-          Password
-        </label>
-      </div>
+      )}
 
-      {type === 'signup' && (
-        <div className="relative">
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 peer"
-            placeholder=" "
-          />
-          <label
-            className="absolute left-4 top-3 text-sm text-gray-400 transition-all duration-300 pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-focus:-top-2 peer-focus:text-xs peer-focus:bg-[#080a0f] peer-focus:px-1 peer-focus:text-cyan-400 peer-focus:font-medium peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-[#080a0f] peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-cyan-400"
-          >
-            Confirm Password
+      <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider px-1">
+        {type === 'signin' ? (
+          <>
+            <label className="flex items-center cursor-pointer group">
+              <input type="checkbox" className="hidden" />
+              <div className="w-4 h-4 rounded border border-white/20 mr-2 flex items-center justify-center group-hover:border-cyan-500 transition-colors">
+                <div className="w-2 h-2 bg-cyan-500 rounded-sm scale-0 transition-transform" />
+              </div>
+              <span className="text-slate-500 group-hover:text-slate-300 transition-colors">Remember me</span>
+            </label>
+            <a href="#" className="text-cyan-500 hover:text-cyan-400">Forgot password?</a>
+          </>
+        ) : (
+          <label className="flex items-center cursor-pointer group">
+            <input type="checkbox" required className="hidden" />
+            <div className="w-4 h-4 rounded border border-white/20 mr-2 flex items-center justify-center group-hover:border-cyan-500 transition-colors">
+              <div className="w-2 h-2 bg-cyan-500 rounded-sm scale-0 transition-transform" />
+            </div>
+            <span className="text-slate-500 group-hover:text-slate-300 transition-colors">
+              I agree to the terms
+            </span>
           </label>
-        </div>
-      )}
-      {type === 'signup' && (
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              required
-              className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-600 rounded bg-black/30 cursor-pointer"
-            />
-          </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="terms" className="text-gray-300">
-              I agree to the{' '}
-              <Link
-                href="/terms-and-conditions"
-                target="_blank"
-                className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
-                onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              >
-                Terms & Conditions
-              </Link>
-            </label>
-          </div>
-        </div>
-      )}
-
-      <div className="flex items-center justify-between">
-        {type === 'signin' && (
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-600 rounded bg-black/30"
-            />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
-              Remember me
-            </label>
-          </div>
-        )}
-
-        {type === 'signin' && (
-          <div className="text-sm">
-            <a href="#" className="font-medium text-cyan-400 hover:text-cyan-300 transition-colors">
-              Forgot password?
-            </a>
-          </div>
         )}
       </div>
 
-      <div>
-        <button
+      <div className="pt-4">
+        <AuthButton
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+          className="w-full"
         >
           {loading ? (
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          ) : null}
-          {loading ? (type === 'signin' ? 'Signing in...' : 'Creating account...') : (type === 'signin' ? 'Sign in' : 'Create Account')}
-        </button>
+            <div className="flex items-center">
+              <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Processing...
+            </div>
+          ) : (type === 'signin' ? 'Sign In' : 'Create Account')}
+        </AuthButton>
+      </div>
+
+      <div className="text-center mt-6">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+          {type === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
+          <Link
+            href={type === 'signin' ? '/signup' : '/signin'}
+            className="text-cyan-500 hover:text-cyan-400 ml-1 transition-colors"
+          >
+            {type === 'signin' ? 'Sign Up' : 'Sign In'}
+          </Link>
+        </p>
       </div>
     </motion.form>
   );

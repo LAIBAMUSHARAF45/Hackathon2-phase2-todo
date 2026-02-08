@@ -58,11 +58,20 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, loading =
   return (
     <motion.form
       onSubmit={handleSubmit}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6"
     >
+      <div className="mt-2 text-center">
+        <h2 className="text-xl font-bold gradient-text uppercase tracking-tighter">
+          {task ? 'Edit Task' : 'Add New Task'}
+        </h2>
+        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">
+          {task ? 'Update task details' : 'Enter task information below'}
+        </p>
+      </div>
+
       <InputField
         label="Task Title"
         id="task-title"
@@ -70,11 +79,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, loading =
         value={title}
         onChange={(e) => {
           setTitle(e.target.value);
-          if (titleError) setTitleError(''); // Clear error when user starts typing
+          if (titleError) setTitleError('');
         }}
         error={titleError}
         required={true}
-        placeholder="Enter task title"
+        placeholder=" "
       />
 
       <InputField
@@ -83,39 +92,39 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, loading =
         value={description}
         onChange={(e) => {
           setDescription(e.target.value);
-          if (descriptionError) setDescriptionError(''); // Clear error when user starts typing
+          if (descriptionError) setDescriptionError('');
         }}
         error={descriptionError}
-        placeholder="Enter task description (optional)"
+        placeholder=" "
         textarea={true}
-        rows={3}
+        rows={4}
       />
 
-      <div className="flex justify-end space-x-3 pt-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-        >
-          Cancel
-        </button>
+      <div className="flex flex-col space-y-3 pt-4">
         <AuthButton
           type="submit"
           disabled={loading}
-          className="px-6"
+          className="w-full"
         >
           {loading ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center">
+              <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {task ? 'Updating...' : 'Creating...'}
-            </>
-          ) : task ? 'Update Task' : 'Create Task'}
+              Processing...
+            </div>
+          ) : task ? 'Save Changes' : 'Create Task'}
         </AuthButton>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-red-400 transition-colors py-2"
+        >
+          Cancel
+        </button>
       </div>
-    </motion.form>
+    </motion.form >
   );
 };
 

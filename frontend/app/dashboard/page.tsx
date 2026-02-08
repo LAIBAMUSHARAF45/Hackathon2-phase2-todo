@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { getTasks, createTask, Task } from '../../lib/api';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Navbar from '../../components/Navbar';
 import TaskCard from '../../components/TaskCard';
 import GlassCard from '../../components/GlassCard';
+import TaskSkeleton from '../../components/TaskSkeleton';
 import Modal from '../../components/Modal';
 import TaskForm from '../../components/TaskForm';
 import toast from 'react-hot-toast';
@@ -37,103 +38,105 @@ const DashboardPage = () => {
     try {
       const newTask = await createTask(taskData);
       setTasks([newTask, ...tasks]);
-      toast.success('Task created successfully!');
+      toast.success('Task Sequence Initialized');
       setIsModalOpen(false);
     } catch (error) {
       console.error('Failed to create task:', error);
-      toast.error('Failed to create task');
+      toast.error('Initialization Failed');
     }
   };
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-slate-950 pt-28 pb-12 relative">
+      <div className="min-h-screen pt-32 pb-20 relative overflow-hidden">
         <Navbar />
 
+        {/* Background Glows */}
+        <div className="bg-glow glow-1 animate-pulse-slow" />
+        <div className="bg-glow glow-2" />
+
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="container mx-auto px-4 mb-12 text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="container mx-auto px-6 mb-16 relative z-10"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-            Your Tasks
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Manage your tasks efficiently
-          </p>
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tighter uppercase italic">
+              My <span className="gradient-text">Tasks</span>
+            </h1>
+            <div className="flex items-center justify-center space-x-4 mb-2">
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-cyan-500" />
+              <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-cyan-500">
+                Task Management Dashboard
+              </p>
+              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-cyan-500" />
+            </div>
+          </div>
         </motion.div>
 
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            Array.from({ length: 3 }).map((_, idx) => (
-              <GlassCard key={idx} className="h-44 animate-pulse">
-                <div className="h-full flex flex-col justify-center items-center">
-                  <div className="bg-gray-700 rounded-full w-12 h-12 mb-4"></div>
-                  <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-700 rounded w-1/2"></div>
-                </div>
-              </GlassCard>
-            ))
-          ) : tasks.length > 0 ? (
-            tasks.map((task) => (
-              <motion.div
-                key={task.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <TaskCard
-                  task={task}
-                  onTaskUpdate={(updatedTask) =>
-                    setTasks((prev) =>
-                      prev.map((t) =>
-                        String(t.id) === String(updatedTask.id) ? updatedTask : t
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {loading ? (
+              Array.from({ length: 6 }).map((_, idx) => (
+                <TaskSkeleton key={idx} />
+              ))
+            ) : tasks.length > 0 ? (
+              <AnimatePresence mode="popLayout">
+                {tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onTaskUpdate={(updatedTask) =>
+                      setTasks((prev) =>
+                        prev.map((t) =>
+                          String(t.id) === String(updatedTask.id) ? updatedTask : t
+                        )
                       )
-                    )
-                  }
-                  onTaskDelete={(taskId) =>
-                    setTasks((prev) => prev.filter((t) => String(t.id) !== String(taskId)))
-                  }
-                />
+                    }
+                    onTaskDelete={(taskId) =>
+                      setTasks((prev) => prev.filter((t) => String(t.id) !== String(taskId)))
+                    }
+                  />
+                ))}
+              </AnimatePresence>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full text-center py-32"
+              >
+                <GlassCard intensity="high" className="inline-block px-12 py-10 border-white/5">
+                  <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-8 h-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-200 mb-2 tracking-tight">System Idle</h3>
+                  <p className="text-sm text-slate-500 max-w-xs mx-auto">
+                    Waiting for user directives. Initialize your first task to begin.
+                  </p>
+                </GlassCard>
               </motion.div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <GlassCard className="inline-block p-8">
-                <h3 className="text-xl font-semibold text-gray-300 mb-2">
-                  No tasks yet
-                </h3>
-                <p className="text-gray-400">
-                  Create your first task to get started
-                </p>
-              </GlassCard>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Floating Add Button */}
         <motion.button
-          className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-cyan-600 flex items-center justify-center text-white shadow-lg z-40 hover:bg-cyan-500"
-          whileHover={{ scale: 1.1, boxShadow: "0 0 25px rgba(6, 182, 212, 0.6)" }}
-          whileTap={{ scale: 0.95 }}
-          animate={{
-            boxShadow: [
-              "0 0 10px rgba(6, 182, 212, 0.4)",
-              "0 0 20px rgba(6, 182, 212, 0.7)",
-              "0 0 10px rgba(6, 182, 212, 0.4)"
-            ]
-          }}
-          transition={{ boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" } }}
+          className="fixed bottom-10 right-10 w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white shadow-[0_10px_40px_rgba(6,182,212,0.4)] z-40 group overflow-hidden"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => setIsModalOpen(true)}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
         </motion.button>
 
         {/* Task Creation Modal */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Create New Task">
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Task">
           <TaskForm onSubmit={handleCreateTask} onCancel={() => setIsModalOpen(false)} />
         </Modal>
       </div>

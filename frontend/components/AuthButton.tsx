@@ -20,11 +20,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({
   variant = 'primary',
   className = ''
 }) => {
-  const baseClasses = "flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 disabled:opacity-50";
+  const baseClasses = "relative flex justify-center py-3 px-6 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 disabled:opacity-50 overflow-hidden group";
 
   const variantClasses = variant === 'primary'
-    ? "text-white bg-cyan-600 hover:bg-cyan-500 focus:ring-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-    : "text-cyan-400 bg-transparent border border-cyan-400 hover:bg-cyan-400 hover:text-white focus:ring-cyan-500";
+    ? "text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-[0_4px_20px_rgba(6,182,212,0.4)] hover:shadow-[0_8px_30px_rgba(6,182,212,0.6)]"
+    : "text-cyan-400 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-400/50";
 
   return (
     <motion.button
@@ -32,10 +32,13 @@ const AuthButton: React.FC<AuthButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`${baseClasses} ${variantClasses} ${className}`}
-      whileHover={{ scale: disabled ? 1 : 1.05 }}
-      whileTap={{ scale: disabled ? 1 : 0.95 }}
+      whileHover={!disabled ? { scale: 1.02, y: -2 } : {}}
+      whileTap={!disabled ? { scale: 0.98 } : {}}
     >
-      {children}
+      <span className="relative z-10 flex items-center">{children}</span>
+      {variant === 'primary' && !disabled && (
+        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+      )}
     </motion.button>
   );
 };

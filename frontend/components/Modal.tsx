@@ -48,21 +48,26 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
           >
-            <GlassCard className="p-6 rounded-2xl border border-white/20 shadow-2xl">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-white">{title}</h2>
+            <GlassCard intensity="high" className="p-8 md:p-10 border-white/10 shadow-[0_32px_64px_rgba(0,0,0,0.6)]">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <h2 className="text-2xl font-black gradient-text tracking-tighter uppercase">{title}</h2>
+                  <div className="h-1 w-8 bg-cyan-500 rounded-full mt-1" />
+                </div>
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="p-2 rounded-full hover:bg-white/10 text-slate-500 hover:text-white transition-all duration-300 transform hover:rotate-90"
                   aria-label="Close modal"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-              
-              {children}
+
+              <div className="relative z-10">
+                {children}
+              </div>
             </GlassCard>
           </motion.div>
         </motion.div>
