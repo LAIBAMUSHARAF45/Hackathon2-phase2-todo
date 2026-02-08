@@ -13,7 +13,7 @@ allowed_origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     os.getenv("FRONTEND_URL", ""),
-    os.getenv("BETTER_AUTH_URL", ""),
+    os.getenv("BETTER_AUH_URL", ""),
 ]
 # Remove empty strings if variables are not set
 allowed_origins = [origin for origin in allowed_origins if origin]
